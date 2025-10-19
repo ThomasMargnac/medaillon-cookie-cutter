@@ -15,7 +15,7 @@ services:
       - minio-server-data:/data
     restart: always
     networks:
-      - {{ cookiecutter.project_slug }}
+      - {{ cookiecutter.project_slug }}-network
   minio-setup:
     image: minio/mc:${MINIO_CLIENT_VERSION}
     container_name: minio-setup
@@ -30,10 +30,10 @@ services:
     depends_on:
       - minio-server
     networks:
-      - {{ cookiecutter.project_slug }}
+      - {{ cookiecutter.project_slug }}-network
 
 volumes:
   minio-server-data:
 
 networks:
-  {{ cookiecutter.project_slug }}: {}
+  {{ cookiecutter.project_slug }}-network: {}
