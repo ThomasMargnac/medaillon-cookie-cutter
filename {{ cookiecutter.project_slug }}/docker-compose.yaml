@@ -1,0 +1,39 @@
+name: {{ cookiecutter.project_slug }}
+
+services:
+  minio-server:
+    image: minio/minio:${MINIO_SERVER_VERSION}
+    container_name: ${MINIO_SERVER_NAME}
+    command: server /data --console-address ":9001"
+    ports:
+      - 9000:9000
+      - 9001:9001
+    environment:
+      - MINIO_ROOT_USER=${MINIO_SERVER_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${MINIO_SERVER_ROOT_PASSWORD}
+    volumes:
+      - minio-server-data:/data
+    restart: always
+    networks:
+      - {{ cookiecutter.project_slug }}
+  minio-setup:
+    image: minio/mc:${MINIO_CLIENT_VERSION}
+    container_name: minio-setup
+    environment:
+      - MINIO_ROOT_USER=${MINIO_SERVER_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${MINIO_SERVER_ROOT_PASSWORD}
+      - MINIO_SERVER_NAME=${MINIO_SERVER_NAME}
+      - BUCKETS=${BUCKETS}
+    volumes:
+      - ./config/minio-mc/init.sh:/init/init.sh
+    entrypoint: /bin/sh -c "/init/init.sh"
+    depends_on:
+      - minio-server
+    networks:
+      - {{ cookiecutter.project_slug }}
+
+volumes:
+  minio-server-data:
+
+networks:
+  {{ cookiecutter.project_slug }}: {}
