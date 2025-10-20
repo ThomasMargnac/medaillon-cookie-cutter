@@ -9,8 +9,23 @@ def install_virtual_env():
         shell=True
     )
 
+def init_git_repo():
+    subprocess.run(
+        args="git init --initial-branch=main",
+        shell=True
+    )
+    subprocess.run(
+        args="git add .",
+        shell=True
+    )
+    subprocess.run(
+        args="git commit -m 'Initial commit'",
+        shell=True
+    )
+
 def main():
     install_virtual_env()
+    init_git_repo()
 
 if __name__ == "__main__":
     main()
