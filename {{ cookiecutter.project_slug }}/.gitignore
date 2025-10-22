@@ -3,3 +3,4 @@
 
 # Files
 *.env
+.pre-commit-config.yaml
