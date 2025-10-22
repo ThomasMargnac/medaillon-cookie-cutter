@@ -8,7 +8,8 @@ authors = [
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "deltalake<=1.2.0"
+    "deltalake>=1.2.0",
+    "pre-commit>=4.3.0"
 ]
 
 [build-system]

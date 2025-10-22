@@ -23,9 +23,16 @@ def init_git_repo():
         shell=True
     )
 
+def install_pre_commit():
+    subprocess.run(
+        args=".venv/bin/pre-commit install",
+        shell=True
+    )
+
 def main():
     install_virtual_env()
     init_git_repo()
+    install_pre_commit()
 
 if __name__ == "__main__":
     main()
