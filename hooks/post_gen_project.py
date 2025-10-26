@@ -28,6 +28,10 @@ def install_pre_commit():
         args=".venv/bin/pre-commit install",
         shell=True
     )
+    subprocess.run(
+        args=".venv/bin/pre-commit install --hook-type commit-msg",
+        shell=True
+    )
 
 def main():
     install_virtual_env()
