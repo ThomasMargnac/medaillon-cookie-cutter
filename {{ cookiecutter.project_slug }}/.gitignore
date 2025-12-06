@@ -1,6 +1,9 @@
 # Folders
 .venv/
+__pycache__/
+*.egg-info/
 
 # Files
 *.env
 .pre-commit-config.yaml
+.DS_Store
