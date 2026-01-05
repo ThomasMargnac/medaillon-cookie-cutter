@@ -1,7 +1,7 @@
 import pytest
 import polars as pl
 from pytest_lazy_fixtures import lf as lazy_fixture
-from {{ cookiecutter.project_slug }}.utils.common import (
+from {{ cookiecutter.project_slug }}.utils.commons import (
     add_timestamp_column,
 )
 
