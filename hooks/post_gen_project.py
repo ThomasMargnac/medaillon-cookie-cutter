@@ -35,8 +35,8 @@ def install_pre_commit():
 
 def main():
     install_virtual_env()
-    install_pre_commit()
     init_git_repo()
+    install_pre_commit()
 
 if __name__ == "__main__":
     main()
