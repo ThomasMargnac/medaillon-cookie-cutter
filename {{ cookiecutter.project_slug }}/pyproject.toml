@@ -11,7 +11,10 @@ dependencies = [
     "deltalake>=1.2.0",
     "python-dotenv>=1.2.1",
     "pre-commit>=4.3.0",
-    "commitizen>=4.9.1"
+    "commitizen>=4.9.1",
+    "polars>=1.36.1",
+    "pytest>=9.0.2",
+    "pytest-lazy-fixtures>=1.4.0"
 ]
 
 [build-system]
