@@ -2,9 +2,9 @@ import pytest
 import polars as pl
 
 
-###
-### Add Timestamp Column Tests
-###
+"""
+Fixtures for the `add_timestamp_column` function.
+"""
 
 
 @pytest.fixture
@@ -37,9 +37,9 @@ def df_add_timestamp_column_str():
     return "Not a DataFrame"
 
 
-###
-### Add Timestamp Column Tests
-###
+"""
+Fixtures for the `validate_columns` function.
+"""
 
 
 @pytest.fixture()

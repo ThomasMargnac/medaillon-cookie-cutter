@@ -7,9 +7,15 @@ from {{ cookiecutter.project_slug }}.utils.commons import (
 )
 
 """
-###
-Tests for the function `add_timestamp_column`
-###
+Tests for the `add_timestamp_column` function.
+
+These tests ensure that:
+- the expected column is present
+- the name of the new column is the one provided
+- the data type of the new column is correct
+- the timestamp values are consistent across all rows
+- other columns remain unchanged
+- wrong input types raise appropriate errors
 """
 
 
@@ -69,9 +75,11 @@ def test_add_timestamp_column_no_dataframe(df: pl.DataFrame):
 
 
 """
-###
-Tests for the function `validate_columns`
-###
+Tests for the `validate_columns` function.
+
+These tests ensure that:
+- the happy path passes without errors
+- inputs with missing or extra columns raises appropriate errors
 """
 
 @pytest.mark.parametrize(
