@@ -82,6 +82,7 @@ These tests ensure that:
 - inputs with missing or extra columns raises appropriate errors
 """
 
+
 @pytest.mark.parametrize(
     argnames="df, schema",
     argvalues=[(lazy_fixture("df_validate_columns_expected_columns"), lazy_fixture("expected_schema_validate_columns"))],
