@@ -3,12 +3,20 @@ import polars as pl
 from pytest_lazy_fixtures import lf as lazy_fixture
 from {{ cookiecutter.project_slug }}.utils.commons import (
     add_timestamp_column,
+    validate_columns,
 )
 
+"""
+Tests for the `add_timestamp_column` function.
 
-###
-### add_timestamp_column tests
-###
+These tests ensure that:
+- the expected column is present
+- the name of the new column is the one provided
+- the data type of the new column is correct
+- the timestamp values are consistent across all rows
+- other columns remain unchanged
+- wrong input types raise appropriate errors
+"""
 
 
 @pytest.mark.parametrize(
@@ -64,3 +72,32 @@ def test_add_timestamp_column_empty_dataframe(df: pl.DataFrame):
 def test_add_timestamp_column_no_dataframe(df: pl.DataFrame):
     with pytest.raises(AttributeError):
         add_timestamp_column(df)
+
+
+"""
+Tests for the `validate_columns` function.
+
+These tests ensure that:
+- the happy path passes without errors
+- inputs with missing or extra columns raises appropriate errors
+"""
+
+
+@pytest.mark.parametrize(
+    argnames="df, schema",
+    argvalues=[(lazy_fixture("df_validate_columns_expected_columns"), lazy_fixture("expected_schema_validate_columns"))],
+)
+def test_validate_columns(df, schema):
+    validate_columns(df, schema)
+
+
+@pytest.mark.parametrize(
+    argnames="df, schema",
+    argvalues=[
+        (lazy_fixture("df_validate_columns_missing_columns"), lazy_fixture("expected_schema_validate_columns")),
+        (lazy_fixture("df_validate_columns_extra_columns"), lazy_fixture("expected_schema_validate_columns")),
+    ],
+)
+def test_validate_columns_missing_or_extra(df, schema):
+    with pytest.raises(ValueError):
+        validate_columns(df, schema)
