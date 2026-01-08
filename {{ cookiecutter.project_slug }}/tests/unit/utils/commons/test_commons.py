@@ -109,7 +109,11 @@ def test_validate_columns_missing_or_extra(df, schema):
 Tests for the `parse_european_decimal_columns` function.
 
 These tests ensure that:
-- 
+- simple European decimal strings are correctly parsed
+- multiple columns with European decimal strings are correctly parsed
+- columns with None values are correctly handled
+- wrong column names raise appropriate errors
+- invalid European decimal strings raise appropriate errors
 """
 
 
