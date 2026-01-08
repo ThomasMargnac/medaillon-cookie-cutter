@@ -86,3 +86,32 @@ def df_validate_columns_extra_columns():
         }
     )
     return df
+
+
+"""
+Fixtures for the `parse_european_decimal_columns` function.
+"""
+
+
+@pytest.fixture
+def df_european_decimal_simple():
+    df = pl.DataFrame({"price": ["1,23", "4,56"]})
+    return df
+
+
+@pytest.fixture
+def df_european_decimal_multi():
+    df = pl.DataFrame({"price": ["1,23"], "tax": ["0,20"]})
+    return df
+
+
+@pytest.fixture
+def df_european_decimal_with_none():
+    df = pl.DataFrame({"price": ["1,23", None]})
+    return df
+
+
+@pytest.fixture
+def df_european_decimal_wrong_value():
+    df = pl.DataFrame({"price": ["abc"]})
+    return df
