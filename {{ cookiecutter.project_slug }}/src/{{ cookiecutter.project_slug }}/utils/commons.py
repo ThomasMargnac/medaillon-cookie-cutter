@@ -33,6 +33,30 @@ def validate_columns(
         )
 
 
+def cast_to_schema(
+    df: pl.DataFrame, schema: pl.Schema, datetime_format: str = "%d/%m/%Y"
+) -> pl.DataFrame:
+    expressions = []
+
+    for column, dtype in schema.items():
+        if isinstance(dtype, pl.Datetime) and df[column].dtype == pl.String:
+            expr = (
+                pl.col(column)
+                .str.strptime(pl.Datetime, format=datetime_format, strict=True)
+                .alias(column)
+            )
+
+        else:
+            expr = pl.col(column).cast(dtype).alias(column)
+
+        expressions.append(expr)
+
+    try:
+        return df.select(expressions)
+    except Exception as exc:
+        raise ValueError("Failed to cast dataframe to expected schema.") from exc
+
+
 def parse_european_decimal_columns(
     df: pl.DataFrame,
     columns: dict[str, pl.DataType],

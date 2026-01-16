@@ -5,6 +5,7 @@ from {{ cookiecutter.project_slug }}.utils.commons import (
     add_timestamp_column,
     validate_columns,
     parse_european_decimal_columns,
+    cast_to_schema,
 )
 
 
@@ -170,3 +171,48 @@ def test_parse_european_decimal_columns_wrong_value(df):
         Exception, match="Failed to parse one or more European decimal columns"
     ):
         parse_european_decimal_columns(df, {"price": pl.Float32()})
+
+
+"""
+Tests for the `cast_to_schema` function.
+
+These tests ensure that:
+- 
+"""
+
+
+@pytest.mark.parametrize(
+    argnames="df, schema",
+    argvalues=[(lazy_fixture("df_cast_to_schema_expected_columns"), lazy_fixture("expected_schema_cast_to_schema"))],
+)
+def test_cast_to_schema(df, schema):
+    casted_df = cast_to_schema(df, schema)
+    assert casted_df.schema == schema
+
+
+@pytest.mark.parametrize(
+    argnames="df, schema",
+    argvalues=[
+        (
+            lazy_fixture("df_cast_to_schema_expected_columns_other_date_format"),
+            lazy_fixture("expected_schema_cast_to_schema"),
+        )
+    ],
+)
+def test_cast_to_schema_other_date_format(df, schema):
+    casted_df = cast_to_schema(df, schema, datetime_format="%Y-%m-%d")
+    assert casted_df.schema == schema
+
+
+@pytest.mark.parametrize(
+    argnames="df, schema",
+    argvalues=[
+        (
+            lazy_fixture("df_cast_to_schema_expected_columns_other_date_format"),
+            lazy_fixture("expected_schema_cast_to_schema"),
+        )
+    ],
+)
+def test_cast_to_schema_wrong_date_format(df, schema):
+    with pytest.raises(ValueError):
+        cast_to_schema(df, schema)
