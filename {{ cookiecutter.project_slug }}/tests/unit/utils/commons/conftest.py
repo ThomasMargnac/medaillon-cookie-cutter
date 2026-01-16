@@ -115,3 +115,45 @@ def df_european_decimal_with_none():
 def df_european_decimal_wrong_value():
     df = pl.DataFrame({"price": ["abc"]})
     return df
+
+
+"""
+Fixtures for the `cast_to_schema` function.
+"""
+
+@pytest.fixture()
+def expected_schema_cast_to_schema():
+    return pl.Schema(
+        {
+            "id": pl.Int16(),
+            "datetime": pl.Datetime(time_unit="us"),
+            "name": pl.String(),
+            "value": pl.Float32(),
+        }
+    )
+
+
+@pytest.fixture
+def df_cast_to_schema_expected_columns():
+    df = pl.DataFrame(
+        {
+            "id": [1, 2],
+            "datetime": ["01/01/2023", "01/02/2023"],
+            "name": ["A", "B"],
+            "value": [10.0, 20.0],
+        }
+    )
+    return df
+
+
+@pytest.fixture
+def df_cast_to_schema_expected_columns_other_date_format():
+    df = pl.DataFrame(
+        {
+            "id": [1, 2],
+            "datetime": ["2023-01-01", "2023-02-01"],
+            "name": ["A", "B"],
+            "value": [10.0, 20.0],
+        }
+    )
+    return df
