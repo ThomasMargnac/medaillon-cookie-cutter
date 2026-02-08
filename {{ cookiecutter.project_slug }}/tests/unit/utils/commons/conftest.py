@@ -157,3 +157,56 @@ def df_cast_to_schema_expected_columns_other_date_format():
         }
     )
     return df
+
+
+"""
+Fixtures for the `incremental_load` function.
+"""
+
+
+@pytest.fixture
+def df_incremental_load_initial():
+    df = pl.DataFrame(
+        {
+            "id": [1, 2, 3],
+            "name": ["Alice", "Bob", "Charlie"],
+            "value": [10.0, 20.0, 30.0],
+        }
+    )
+    return df
+
+
+@pytest.fixture
+def df_incremental_load_new_rows():
+    df = pl.DataFrame(
+        {
+            "id": [4, 5],
+            "name": ["David", "Eve"],
+            "value": [40.0, 50.0],
+        }
+    )
+    return df
+
+
+@pytest.fixture
+def df_incremental_load_update_rows():
+    df = pl.DataFrame(
+        {
+            "id": [1, 2],
+            "name": ["Alice Updated", "Bob Updated"],
+            "value": [100.0, 200.0],
+        }
+    )
+    return df
+
+
+@pytest.fixture
+def df_incremental_load_mixed():
+    df = pl.DataFrame(
+        {
+            "id": [2, 4],
+            "name": ["Bob Updated", "David"],
+            "value": [200.0, 40.0],
+        }
+    )
+    return df
