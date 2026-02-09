@@ -160,6 +160,35 @@ def df_cast_to_schema_expected_columns_other_date_format():
 
 
 """
+Fixtures for the `full_load` function.
+"""
+
+
+@pytest.fixture
+def df_full_load():
+    df = pl.DataFrame(
+        {
+            "id": [1, 2, 3],
+            "name": ["Alice", "Bob", "Charlie"],
+            "value": [10.0, 20.0, 30.0],
+        }
+    )
+    return df
+
+
+@pytest.fixture
+def df_full_load_overwrite():
+    df = pl.DataFrame(
+        {
+            "id": [4, 5],
+            "name": ["David", "Eve"],
+            "value": [40.0, 50.0],
+        }
+    )
+    return df
+
+
+"""
 Fixtures for the `incremental_load` function.
 """
 

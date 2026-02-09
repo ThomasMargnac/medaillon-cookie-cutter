@@ -87,6 +87,19 @@ def add_timestamp_column(
     return df.with_columns(pl.lit(datetime.now()).alias(column_name))
 
 
+def full_load(
+    df: pl.DataFrame,
+    table_uri: str,
+    storage_options: dict[str, str] | None = None,
+) -> None:
+    write_deltalake(
+        table_or_uri=table_uri,
+        data=df.to_arrow(),
+        mode="overwrite",
+        storage_options=storage_options,
+    )
+
+
 def incremental_load(
     df: pl.DataFrame,
     table_uri: str,
