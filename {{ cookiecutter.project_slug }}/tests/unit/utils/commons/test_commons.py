@@ -6,6 +6,7 @@ from {{ cookiecutter.project_slug }}.utils.commons import (
     validate_columns,
     parse_european_decimal_columns,
     cast_to_schema,
+    full_load,
     incremental_load,
 )
 
@@ -217,6 +218,61 @@ def test_cast_to_schema_other_date_format(df, schema):
 def test_cast_to_schema_wrong_date_format(df, schema):
     with pytest.raises(ValueError):
         cast_to_schema(df, schema)
+
+
+"""
+Tests for the `full_load` function.
+
+These tests ensure that:
+- a new Delta table is created when it does not exist
+- existing data is fully replaced on subsequent loads
+- wrong input types raise appropriate errors
+"""
+
+
+@pytest.mark.parametrize(
+    argnames="df",
+    argvalues=[lazy_fixture("df_full_load")],
+)
+def test_full_load_first_load(df, tmp_path):
+    table_uri = str(tmp_path / "test_table")
+    full_load(df, table_uri)
+    result = pl.read_delta(table_uri)
+    assert result.height == 3
+    assert sorted(result["id"].to_list()) == [1, 2, 3]
+    assert sorted(result["name"].to_list()) == ["Alice", "Bob", "Charlie"]
+
+
+@pytest.mark.parametrize(
+    argnames="initial_df, overwrite_df",
+    argvalues=[
+        (
+            lazy_fixture("df_full_load"),
+            lazy_fixture("df_full_load_overwrite"),
+        )
+    ],
+)
+def test_full_load_overwrites_existing_data(initial_df, overwrite_df, tmp_path):
+    table_uri = str(tmp_path / "test_table")
+    full_load(initial_df, table_uri)
+    full_load(overwrite_df, table_uri)
+    result = pl.read_delta(table_uri)
+    assert result.height == 2
+    assert sorted(result["id"].to_list()) == [4, 5]
+    assert sorted(result["name"].to_list()) == ["David", "Eve"]
+
+
+@pytest.mark.parametrize(
+    argnames="df",
+    argvalues=[
+        lazy_fixture("df_add_timestamp_column_none"),
+        lazy_fixture("df_add_timestamp_column_str"),
+    ],
+)
+def test_full_load_wrong_input_type(df, tmp_path):
+    table_uri = str(tmp_path / "test_table")
+    with pytest.raises(AttributeError):
+        full_load(df, table_uri)
 
 
 """
