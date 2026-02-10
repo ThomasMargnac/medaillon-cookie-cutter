@@ -28,24 +28,19 @@ def parse_european_decimal_columns(
     Raises
     ------
     ValueError
-        If a specified column is not found in the DataFrame.
-    Exception
-        If parsing or casting fails for any column.
+        If a specified column is not found in the DataFrame,
+        or if parsing/casting fails for any column.
     """
-    expressions = []
+    missing = set(columns) - set(df.columns)
+    if missing:
+        raise ValueError(f"Columns not found in dataframe: {sorted(missing)}")
 
-    for column, dtype in columns.items():
-        if column not in df.columns:
-            raise ValueError(f"Expected column '{column}' not found in dataframe")
-
-        expressions.append(
-            pl.when(pl.col(column).is_null())
-            .then(None)
-            .otherwise(pl.col(column).str.replace(",", ".").cast(dtype))
-            .alias(column)
-        )
+    expressions = [
+        pl.col(col).str.replace(",", ".").cast(dtype)
+        for col, dtype in columns.items()
+    ]
 
     try:
         return df.with_columns(expressions)
     except Exception as exc:
-        raise Exception("Failed to parse one or more European decimal columns") from exc
+        raise ValueError("Failed to parse one or more European decimal columns") from exc

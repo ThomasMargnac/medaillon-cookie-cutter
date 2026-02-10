@@ -57,7 +57,7 @@ def test_parse_european_decimal_columns_with_none(df):
 )
 def test_parse_european_decimal_columns_wrong_column(df):
     with pytest.raises(
-        ValueError, match="Expected column 'Wrong column' not found in dataframe"
+        ValueError, match="Columns not found in dataframe"
     ):
         parse_european_decimal_columns(df, {"Wrong column": pl.Float32()})
 
