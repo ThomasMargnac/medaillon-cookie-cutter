@@ -47,16 +47,22 @@ def validate_columns(
             f"Schema mismatch: missing={sorted(missing)}, extra={sorted(extra)}"
         )
 
-    columns_to_check = expected - skip_full_null_check
+    columns_to_check = sorted(expected - skip_full_null_check)
 
+    if not columns_to_check:
+        return
+
+    null_counts = df.select(columns_to_check).null_count()
     full_null_columns = [
-        col for col in columns_to_check if df[col].null_count() == df.height
+        col
+        for col, count in zip(columns_to_check, null_counts.row(0))
+        if count == df.height
     ]
 
     if full_null_columns:
         raise ValueError(
             "Columns are empty (all values are null) but are required: "
-            f"{sorted(full_null_columns)}"
+            f"{full_null_columns}"
         )
 
 
@@ -90,20 +96,14 @@ def cast_to_schema(
     ValueError
         If casting fails for any column.
     """
-    expressions = []
+    source_schema = df.schema
 
-    for column, dtype in schema.items():
-        if isinstance(dtype, pl.Datetime) and df[column].dtype == pl.String:
-            expr = (
-                pl.col(column)
-                .str.strptime(pl.Datetime, format=datetime_format, strict=True)
-                .alias(column)
-            )
-
-        else:
-            expr = pl.col(column).cast(dtype).alias(column)
-
-        expressions.append(expr)
+    expressions = [
+        pl.col(col).str.strptime(pl.Datetime, format=datetime_format, strict=True)
+        if isinstance(target_dtype, pl.Datetime) and source_schema[col] == pl.String
+        else pl.col(col).cast(target_dtype)
+        for col, target_dtype in schema.items()
+    ]
 
     try:
         return df.select(expressions)
